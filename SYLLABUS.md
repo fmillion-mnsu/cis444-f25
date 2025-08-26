@@ -15,7 +15,7 @@ This is a 4-credit course for Computer Information Science majors or graduate st
 ## Class Time and Place
 
 - **Semester/Block**: Fall 2025 (8/26/2023 through 12/9/2023), 29 class sessions
-- **Days and Time**: Tuesdays and Thursdays, 10:00 AM - 11:50 AM ([iCalendar File](https://github.com/fmillion-mnsu/cs470-s25/raw/master/cs470.ics))
+- **Days and Time**: Tuesdays and Thursdays, 10:00 AM - 11:50 AM ([iCalendar File](https://github.com/fmillion-mnsu/cs470-s25/raw/master/cis444.ics))
 - **Location:** WH 283 ([Building Map](https://www.mnsu.edu/globalassets/maps/university/buildings/2021/wh_02_secondfloor_2021.pdf))
 
 ## Instructor
@@ -36,7 +36,7 @@ If you would like to meet with me directly, you can schedule time with me to mee
 
 This course will introduce you to techniques in advanced data analysis and analytics. You will learn:
 
-* role of database architects
+* big data terminology and concepts
 * database modeling with reverse engineering
 * data models: organization master data model (OMDM), star schemas
 * advanced SQL programming techniques 
@@ -74,18 +74,6 @@ D2L will be used to provide you with course announcements, homework assignments,
 
 This course will involve a major group project that you will work on in small groups of 3-4 students throughout the duration of the semester. 
 
-# Course Schedule (Weeks 3-15)
-
-| Week # | Overall Topic | Specific Steps |
-|--------|---------------|----------------|
-| **Weeks 3-4**<br/>(Sprint 1) | **Project Management Setup, Data Modeling Fundamentals, and Initial Database Exploration** | **Lectures:**<br/>- **Agile Methodology and Scrum:** Introduce concepts like sprints, product backlog, daily scrum, sprint planning, roles (ScrumMaster, Product Owner, Team).<br/>- **Data Modeling:** Cover Conceptual, Logical, and Physical Data Models. Focus on **Entity-Relationship Diagramming (ERD)** components (entities, attributes, relationships: 1-M, 1-1, M-M) and their **conversion rules to a relational database** model.<br/>- **Introduction to System Catalogs:** Explain their purpose and how to query them in Oracle and MSSQL for metadata.<br/><br/>**Group Work/Project Steps:**<br/>- Students will formalize their class groups (formed in Week 1).<br/>- **Set up Team Trello Boards** for project management and define initial product backlogs for the semester-long project.<br/>- Begin exploring assigned databases in Docker environments.<br/>- Perform **reverse engineering to produce data models** (e.g., using Microsoft Visio) for assigned databases and compare them with intended models.<br/>- Utilize **System Catalog commands** to list schema, table names, and record counts for databases in Oracle and MSSQL.<br/>- Introduce the **Data Governance Database (DGDB)** as a central metadata repository.<br/><br/>**Sprint 1 Deliverables (Enhanced):** Submit initial Trello setup, sprint planning document, initial scrum reports, project reports (introduction, sprints, scrum report, appendix with initial data exploration and model comparisons), and presentation artifacts. Focus on documenting initial database structures. |
-| **Weeks 5-6**<br/>(Sprint 2) | **Advanced SQL for Data Exploration & Basic Data Analysis with Pivot Tables** | **Lectures:**<br/>- **Advanced SQL Functions:** Dive into analytical capabilities with `CASE` expressions, `DECODE` function, `GROUP BY` with `ROLLUP` and `CUBE` operators, and ranking functions like `RANK` and `DENSE_RANK`, `NTILE`.<br/>- **Pivot Table Fundamentals:** Explain the anatomy of a pivot table (values, row, column, report filter areas), and guide students through creating basic pivot tables in Excel.<br/>- **Introduction to Data Warehousing Concepts:** Lay the groundwork by defining key characteristics like subject-oriented, integrated, time-variant, and non-volatile data.<br/><br/>**Group Work/Project Steps:**<br/>- Implement **Query List 1 (System Catalog Queries)** using advanced SQL commands against Oracle System Catalog (OSC), MSSQL System Catalog (MSC), and DGDB.<br/>- Analyze the results from Query List 1 using **Pivot Tables** in Excel, producing visual reports and charts.<br/><br/>**Sprint 2 Deliverables (Enhanced):** Submit updated product and sprint backlogs, detailed scrum reports, comprehensive project reports (including a comparative analysis of SQL vs. Pivot table results for Query List 1), and presentation artifacts. Students should now have a solid understanding of extracting and summarizing metadata. |
-| **Weeks 7-8**<br/>(Sprint 3) | **Database Programming & Interactive Pivot Dashboards** | **Lectures:**<br/>- **PL/SQL and T-SQL Programming:** Cover control structures (`IF-THEN-ELSE`, loops), cursors for row-by-row processing, and the development of **Stored Procedures** and **User Defined Functions (UDFs)**.<br/>- **Database Objects:** Detail the creation and usage of **Views** (including grouped and joined views) and **Materialized Views** (for performance), and **Triggers** for automating database actions, auditing, and enforcing integrity constraints.<br/>- **Advanced Pivot Table Features:** Explore grouping numeric and date fields, performing calculations, and designing interactive dashboards (e.g., using slicers).<br/><br/>**Group Work/Project Steps:**<br/>- Re-implement **Query List 1** (System Catalog Queries) using **database programming (Stored Procedures, UDFs, Views)** against OSC, MSC, and DGDB.<br/>- Design and implement a **Pivot User Interface (PUI)** using Excel, creating linked sheets to present interactive data analysis.<br/><br/>**Sprint 3 Deliverables (Enhanced):** Submit updated backlogs, scrum reports, project reports (comparing SQL and DB Programming implementations, and PUI design documentation), and presentation artifacts. Students should demonstrate ability to automate data extraction and create more dynamic reports. |
-| **Weeks 9-10**<br/>(Sprint 4) | **Data Warehouse Design & OLAP Fundamentals** | **Lectures:**<br/>- **Data Warehousing Design:** Deep dive into **Dimensionality Modeling**, differentiating it from ER modeling. Focus on designing **Fact Tables and Dimension Tables** to create **Star Schemas**.<br/>- **Online Analytical Processing (OLAP):** Introduce key OLAP analytical operations like **Roll-up, Drill-down, Slice, Dice, and Pivot**. Discuss the architecture and categories of OLAP tools (MOLAP, ROLAP).<br/>- **Fuzzy Active Databases:** Introduce the concept of **Fuzzy Logic** and its application in active databases for performance evaluation, linking to Query List 2.<br/><br/>**Group Work/Project Steps:**<br/>- Implement **Data Marts** (as views) for **Query List 1** (System Catalog), **Query List 2** (Fuzzy Queries on FAOES database), and **Query List 3** (MLS2 Player, Team, and Referee Performance analysis).<br/>- Connect Excel Pivot tables to these newly created data mart views to perform ad-hoc analysis and reporting.<br/><br/>**Sprint 4 Deliverables (Enhanced):** Submit updated backlogs, scrum reports, project reports (including detailed star schema designs, data mart implementations, and analytical reports from Pivot tables), and presentation artifacts. Students will demonstrate ability to design and query data warehouses. |
-| **Weeks 11-12**<br/>(Sprint 5) | **Modern Analytical Tools: Power BI & Python for Big Data** | **Lectures:**<br/>- **Power BI (PBI):** Provide an overview of Power BI's capabilities, including connecting to various data sources, designing user interfaces, creating interactive dashboards, and visualizing complex data.<br/>- **Python for Data Access:** Cover fundamental Python libraries for connecting to and retrieving data from both relational databases (using SQL) and **NoSQL databases (specifically MongoDB)**.<br/>- **MongoDB Concepts:** Introduce MongoDB as a document-oriented NoSQL database, explaining **JSON/BSON document structure**, and demonstrating basic queries (`$match`, `$group`, `$sort`, `$limit`) and aggregation pipelines.<br/><br/>**Group Work/Project Steps:**<br/>- Implement **Query Lists (1, 2, and 3)** using **Power BI** to create advanced visualizations and interactive reports. Compare the results and functionalities with previous Pivot table implementations.<br/>- Implement **Query List 1** using **Python** scripts to interact with databases and retrieve data. Compare Python implementations with earlier SQL implementations.<br/><br/>**Sprint 5 Deliverables (Enhanced):** Submit updated backlogs, scrum reports, project reports (showcasing Power BI dashboards and Python scripts, with comparative analysis), and presentation artifacts. Students will be proficient in using modern BI and scripting tools. |
-| **Weeks 13-14**<br/>(Sprint 6) | **Distributed Database Systems & Query Optimization** | **Lectures:**<br/>- **Distributed Databases (DDBS):** Cover core concepts such as **data fragmentation** (horizontal, vertical), **data replication**, and various types of **transparency** (location, fragmentation, replication). Discuss the advantages of distributed systems like local autonomy, reliability, and availability.<br/>- **Distributed Concurrency Control:** Explore the complexities of **distributed deadlocks** and mechanisms like **Two-Phase Commit (2PC)** and **Three-Phase Commit (3PC)** for ensuring transaction atomicity in distributed environments.<br/>- **Distributed Query Processing (DQP):** Explain strategies for optimizing queries across multiple sites, including understanding communication cost models and techniques like **semi-joins**. Introduce the concept of **Linked Services** for cross-DBMS queries.<br/><br/>**Group Work/Project Steps:**<br/>- Develop a **distributed database data model** based on a given strategy, considering regional data distribution and replication scenarios.<br/>- Re-implement selected **Query Lists (from Sprints 2, 4, and 5)** using **Distributed Query Processing (DQP)** by leveraging **Linked Services** from a central MSSQL server to query across various DBMS (Oracle, MSSQL, MongoDB).<br/><br/>**Sprint 6 Deliverables (Enhanced):** Submit updated backlogs, scrum reports, final project reports (documenting DDBS strategy, DQP implementations with screenshots, and comparative analysis with previous sprint results), and presentation artifacts. This will be the culmination of their project work on distributed systems. |
-| **Week 15** | **Project Integration & Final Preparations** | **Specific Steps:**<br/>- This week is dedicated to **consolidating all work** from the previous sprints into a cohesive final project submission.<br/>- Students will focus on **reviewing their solutions, ensuring correctness and completeness** across all implemented query lists and database technologies.<br/>- Teams should use this time to **prepare thoroughly for their final project presentations**, refining their demo, narrative, and report.<br/>- **Finalize and submit the comprehensive Final Report**, which will integrate all aspects of the project, including methodologies, implementations, analysis, and conclusions. |
-
 ## Grading
 
 This course is available on a for-credit, Grade Only basis. You will receive a letter grade in this course. Your final grade will be calculated according to the following rubric on the next page.
@@ -95,8 +83,8 @@ Your final grade for this course will be based on the following assessments and 
 Item | Percent
 ---- | --------
 Attendance | 5%
-Individual Activities | 10%
-Group Activity | 85%
+Individual Activities | 15%
+Group Activity | 80%
 
 **There will be no quizzes or final exam for this course.** The work you do in your individual and group assignments will be ongoing throughout the semester. Your final grade will be calculated based on the above categories.
 
@@ -104,7 +92,6 @@ This course will use shaded grading. The following is the minimum score for each
 
 Percentage of Points | Grade
 -------------------- | -----
-97% | A+
 93% | A
 90% | A-
 87% | B+
@@ -114,8 +101,7 @@ Percentage of Points | Grade
 74% | C
 70% | C-
 67% | D+
-64% | D
-60% | D-
+60% | D
 0% | F
 
 ### Deadlines
@@ -129,10 +115,9 @@ In general, I will use the following penalties for late **individual assignments
 Submitted | Maximum score
 --------- | -------------
 On Time | 100%
-1 day late | 85%
-2 days late | 75%
-3 days late | 65%
-4 days or more late | No credit
+1 day late | 70%
+2 days late | 50%
+3 days or more late | No credit
 
 Late submission days *include weekends*. (If an assignment is due on Friday at 11:59 PM, submitting on Monday counts as 3 days late!)
 
@@ -140,7 +125,7 @@ Late submission days *include weekends*. (If an assignment is due on Friday at 1
 
 ### Attendance Grading
 
-Because attendance is very important in small group project work, we will be taking attendance in this course. Each time you come to class, you will scan your MavCARD to present your attendance. More details on this will be given in class.
+Because attendance is very important in small group project work, we will be taking attendance *randomly* in this course. On some randomly chosen days when you come to class, you will scan your MavCARD to present your attendance. More details on this will be given in class.
 
 Attendance grading will comprise 5% of your final course grade. However, if attendance becomes a significant concern, your overall grade *may be lowered* due to significantly poor attendance, depending on the circumstances. *In general*, three or more full absences without notifying me of the situation may have a more significant effect on your grade. However, I consider attendance on a case-by-case basis - please reach out to me if you have concerns about your ability to attend the class at any point.
 
@@ -215,6 +200,7 @@ In any case where recording is permitted (even for accessibility purposes), reco
 
 The full policy is available at <http://www.mnsu.edu/atoz/policies/recordingoflecturesandmaterials2015.pdf>.
 
+> [!TIP]
 > The materials in this GitHub repository are licensed under CC-BY-SA and are publicly accessible on GitHub, and as such this policy does not apply to the materials in this repository. You may access, share and use these materials however you like provided you abide by the terms of the [CC-BY-SA 4.0 License](https://creativecommons.org/licenses/by-sa/4.0/deed.en).
 
 ### Missed Classes
