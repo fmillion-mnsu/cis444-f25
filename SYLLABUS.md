@@ -72,7 +72,7 @@ D2L will be used to provide you with course announcements, homework assignments,
 
 ## Group Project
 
-This course will involve a major group project that you will work on in small groups of 3-4 students throughout the duration of the semester. 
+This course will involve a [major group project](PROJECT.md) that you will work on in small groups of 3-4 students throughout the duration of the semester. 
 
 ## Grading
 
