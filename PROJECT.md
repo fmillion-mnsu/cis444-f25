@@ -83,6 +83,49 @@ Additionally, you will formalize your group's Agile process. You will:
 * conduct your first **sprint planning meeting** and schedule your **retrospective**
 * decide on and implement an electronic project management strategy and platform (e.g. Trello, Jira)
 
+Finally, you will begin writing your first **query list**. These queries are focused on improving your understanding of the actual data in the database.
+
+- Query 1: Business Scale Analysis. "What is the scope and scale of this business?"
+
+    Analyze table sizes and record counts to understand business volume
+
+    Identify the primary operational focus areas
+
+- Query 2: Stakeholder Identification. "Who are the key people/actors in this business ecosystem?"
+
+    Profile the main human entities (customers, employees, actors, etc.)
+
+    Analyze demographic distribution and key identifying characteristics based on available data.
+
+- Query 3: Geographic Footprint. "Where does this business operate and serve customers?"
+
+    Map the geographic distribution of business operations
+
+    Identify primary markets and service areas
+
+- Query 4: Operational Timeline. "What is the operational history and activity patterns of this business?"
+
+    Determine the time span of business operations in your database
+
+    Identify peak activity periods and business cycles
+
+- Query 5: Value Analysis. "What generates value and revenue in this business?"
+
+    Analyze monetary transactions and value indicators
+
+    Identify high-value activities, products, or services
+
+These queries should be implemented using standard SQL. At this time, don't use views, stored procedures or other programmability.
+
+Document your queries as they will inform your understanding of the business domain for subsequent sprints. Keep your queries handy - you'll be improving and reworking them over time!
+
+> [!HINT]
+> The **Employee** database contains a lot of data, but fewer entities. You may find yourself struggling to apply all of these queries to Employee.
+>
+> If this is the case, you are free to use *any one* of the other two databases to write these queries. This will actually prepare you for the next phase - where we simulate a "company merger" and start building out our data warehouse.
+>
+> If you go this route, make sure you **document which database you used** in your queries (as a comment - hint: SQL Server comments are prefixed with two dashes - `-- This is a comment`).
+
 #### Deliverables
 
 Deliverables to include in your **final project portfolio** include:
@@ -93,6 +136,7 @@ Deliverables to include in your **final project portfolio** include:
   * your team members and any identified strengths or roles you wish to assign (e.g. documentation lead, reporting lead)
   * your project management platform and strategy
   * your plan for scheduling standups and sprint planning/retrospective meetings
+* Query List 1 queries
 
 # Changes
 
