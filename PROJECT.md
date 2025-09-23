@@ -54,10 +54,10 @@ This section outlines the *high level tasks and topics* for the sprints in this 
 | Sprint | Weeks | Topic | Details (topics, assignments...) |
 |-|-|-|-|
 | &ndash; | 1-2 | Class intro, project overbiew | Lecture on big data terminology |
-| 1 | 3-4 | Database Discovery & Project Foundation | Environment setup, database reverse engineering, ERD diagrams/data dictionaries |
-| 2 | 5-6 | SQL Analytical Queries | Query List 1, data split ETL, MongoDB (non-linked) |
-| 3 | 7-8 | Data Warehousing I | ETL for DW, data lake, validation, error handling, Query List 2 |
-| 4 | 9-10 | Data Warehousing II | Star schema design, Fact/Dimension tables, Data marts |
+| 1 | 3-4 | Database Discovery & Project Foundation | Environment setup, database reverse engineering, ERD diagrams/data dictionaries, Query List 1 |
+| 2 | 5-6 | MongoDB, Star Schemas for DW, Performance | Star and Snowflake schemas,  MongoDB (non-linked), ETL from SQL Server to MongoDB (Grad), Query List 2 (Mongo) |
+| 3 | 7-8 | Data Warehousing I | TBD |
+| 4 | 9-10 | Data Warehousing II | TBD |
 | 5 | 11-12 | Reporting and BI | PowerBI dashboards, reports, KPIs/metrics |
 | 6 | 13-14 | Integration and Testing | Finalize system, Documentation, Sprint/Project reporting |
 | 7 | 15-16 | Final Presentation / Finals Week | Prepare and deliver final project presentation |
@@ -138,8 +138,35 @@ Deliverables to include in your **final project portfolio** include:
   * your plan for scheduling standups and sprint planning/retrospective meetings
 * Query List 1 queries
 
+## Sprint 2: MongoDB, NoSQL and Star Schemas
+
+In Sprint 2, you will learn about MongoDB and similar schemaless document databases, and you will form a process for copying your data from your SQL Server into MongoDB.
+
+You will also begin designing - but not yet implementing - your star schemas. Start with choosing **two** of your query list business scenarios, and devise **star schemas** that would specifically support those business questions. 
+
+> [!TIP]
+> Remember: Star schemas are **de-normalized** by design - you should plan to reshape your existing data in such a way to maximize *performance* at the expense of storage size optimization. 
+
+You will:
+
+* ***Grad Students:*** Use Python (or another programming language) to write a simple **ETL tool** that will automatically migrate *all* data for your primary database (all tables and rows) from SQL Server to MongoDB.
+* Convert your Query List 1 queries into MongoDB aggregation pipelines.
+* Create appropriate indexes for your queries to ensure maximum performance
+* Design and create ERDs for at least two star schemas based on your Query List 1 business questions. We will be implementing these schemas in *MongoDB* during Sprint 3.
+
+#### Deliverables
+
+Deliverables to include in your **final project portfolio** include:
+
+* ERD diagrams for star schemas
+* Query List 2 (MongoDB) aggregation queries
+* Code for your ETL tool for migrating from SQL Server to MongoDB
+* A description of, or the code for, indexes you create on your collections for performance optimization
+
 # Changes
 
 This section details *changes* that have been made to this document. You should review this section *regularly* to identify any updates or additions to the project documentation and scope.
 
 * 2025-09-01: First posting of project outline
+* 2025-09-22: Add full details for Sprint 2. Adjust sprint topics. (DW 1 and 2 are TBD based on progress during Sprint 2.)
+
