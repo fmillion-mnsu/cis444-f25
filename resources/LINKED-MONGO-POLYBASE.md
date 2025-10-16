@@ -1,19 +1,18 @@
-# Using Polybase to access Oracle Database from SQL Server
+# Using Polybase to access MongoDB from SQL Server
 
 [Polybase](https://learn.microsoft.com/en-us/sql/relational-databases/polybase/polybase-guide?view=sql-server-ver16) is a feature that is similar to linked servers but is even more tightly integrated into SQL Server. With Polybase, you can directly access tables in Oracle, MongoDB, Hadoop, and even sources like generic S3 storage. These remote sources appear as normal "tables" in SQL Server, and you can query them as such - even including them in `JOIN`s!
 
 The easiest way to generate the external tables is by using [Azure Data Studio](https://azure.microsoft.com/en-us/products/data-studio). The latest versions of SQL Server Management Studio (SSMS) install Azure Data Studio along with SSMS by default, so you may already have ADS on your system. However, if you find you need to isntall it, you can do so by [downloading it using this link](https://go.microsoft.com/fwlink/?linkid=2231303) and installing it.
 
-**The steps for connecting to Oracle tables using Azure Data Studio are as follows:**
+**The steps for connecting to MongoDB collections using Azure Data Studio are as follows:**
 
 1. If you don't have it already, [downloading Azure Data Studio using this link](https://go.microsoft.com/fwlink/?linkid=2231303) and install it.
     - If this is your first time running Azure Data Studio, [prepare it for first use](#preparing-azure-data-studio-for-use) by checking for updates and installing the necessary *Data Virtualization* extension.
-1. [Create a connection in Azure Data Studio](#connecting-to-sql-server-using-azure-data-studio) to your SQL Server instance.
-1. [Ensure PolyBase is enabled](#enabling-polybase).
-1. [Create your database Master Key](#creating-a-database-master-key).
-1. Create your [database scoped credential](#creating-a-database-scoped-credential) and your [external data source](#creating-the-oracle-database-connection) on the database by executing the given queries.
-1. Finally, [use the Data Virtualization wizard](#creating-the-virtual-tables-using-the-virtualization-wizard) to auto-generate linked tables in SQL Server.
-1. You're now ready to write queries that make use of the external Oracle tables - you can use them just as if they were local tables in your database!
+2. [Create a connection in Azure Data Studio](#connecting-to-sql-server-using-azure-data-studio) to your SQL Server instance.
+3. [Create your database Master Key](#creating-a-database-master-key).
+4. Create your [database scoped credential](#creating-a-database-scoped-credential) and your [external data source](#creating-the-mongodb-database-connection) on the database by executing the given queries.
+5. Finally, [use the Data Virtualization wizard](#creating-the-virtual-tables-using-the-virtualization-wizard) to auto-generate linked tables in SQL Server.
+6. You're now ready to write queries that make use of the external MongoDB documents - you can use them just as if they were local tables in your database!
 
 ## Preparing Azure Data Studio for use
 
@@ -46,19 +45,6 @@ Finally, click the Connect button to connect to the server. If all is successful
 
 You've now connected to SQL Server with Azure Data Studio! You will notice that some aspects of this application look familiar to SQL Server Management Studio. However, the *Data Virtualization* extension adds some critical functionality for our use case.
 
-## Enabling PolyBase
-
-It is possible that your server's PolyBase configuration needs to be enabled. In Azure Data Studio, you can run the following script to ensure PolyBase is enabled:
-
-```
-exec sp_configure @configname = 'polybase enabled', @configvalue = 1;
-RECONFIGURE WITH OVERRIDE;
-```
-
-If PolyBase is not enabled, you will encounter errors when you try to create your connections later.
-
-Running this script with PolyBase already enabled won't cause problems, so it is safe to run it regardless.
-
 ## Creating a database master key
 
 In order to connect to external data sources, you need to create a master key on the database you will be working with on the SQL Server. The master key is used as part of the secure encrypted communication with remote servers. In particular, it encrypts the credentials you store for accessing a linked server.
@@ -67,7 +53,7 @@ Each database you intend to connect to a remote table needs a master key. You on
 
 To create the database master key, right-click on the database you will work with and choose `New Query`. This will open an editor window that you can type a query into. You should make sure you are running queries against the correct database by checking the database shown in the drop-down list at the top of the query window.
 
-![Image showing the SP database selected in the drop-down selector at the top of a query window.](images/azuredatastudio_database_selected.png)
+![Image showing the Prop2 database selected in the drop-down selector at the top of a query window.](images/azuredatastudio_database_selected.png)
 
 The query to create a database master key is as follows. **Change `your password` with a unique password** - and make sure you make a note of the password!):
 
@@ -83,20 +69,21 @@ A database-scoped credential is a login credential that is stored within a speci
 
 You can give each credential you create a name. This allows you to store multiple credentials in the database for different linked servers and tables. 
 
-To add a credential, enter and execute this query. **Replace `credential_identifier` with a unique valid identifier** (you'll use it later) and **change `oracle_username` and `oracle_password` to match your server**:
+To add a credential, enter and execute this query. **Replace `credential_identifier` with a unique valid identifier** (you'll use it later) and **change `mongodb_username` and `mongodb_password` to match your server**:
 
     CREATE DATABASE SCOPED CREDENTIAL credential_identifier WITH 
-        IDENTITY = 'oracle_username', 
-        SECRET = 'oracle_password'
+        IDENTITY = 'mongodb_username', 
+        SECRET = 'mongodb_password'
 
-## Creating the Oracle database connection
+## Creating the MongoDB database connection
 
-Azure Data Studio's Virtualization wizard normally lets you specify the connection details within the wizard, but there is a bug that prevents this from working properly when connecting to Oracle 11g servers. So to help things along, we will manually create the Oracle database connection ourselves using a query.
+Azure Data Studio's Virtualization wizard normally lets you specify the connection details within the wizard, but there is a bug that prevents this from working properly when connecting to MongoDB servers. So to help things along, we will manually create the MongoDB database connection ourselves using a query.
 
-The query is as follows. **Replace `data_source_name` with another unique identifier** that you'll use later, and **replace `oracle_host` and `oracle_port` with the correct values**. Finally, **replace `credential_identifier` with the same identifier you used** in the `CREATE DATABASE SCOPED CREDENTIAL` query.
+The query is as follows. **Replace `data_source_name` with another unique identifier** that you'll use later, and **replace `mongo_host` and `mongo_port` with the correct values**. Finally, **replace `credential_identifier` with the same identifier you used** in the `CREATE DATABASE SCOPED CREDENTIAL` query.
 
     CREATE EXTERNAL DATA SOURCE data_source_name WITH ( 
-        LOCATION = 'oracle://oracle_host:oracle_port',
+        LOCATION = 'mongodb://mongo_host:mongo_port',
+        CONNECTION_OPTIONS = 'tls=false; ssl=false',
         CREDENTIAL = credential_identifier
     )
 
@@ -108,21 +95,23 @@ Follow these steps to create your virtual tables:
 
 1. Right-click the database you are working with in the Explorer view and choose `Data Virtualization`.
 
-    ![Image showing the Data Virtualization option highlighted after right-clicking on the SP database.](images/azuredatastudio_ct_step1.png)
+    ![Image showing the Data Virtualization option highlighted after right-clicking on the Prop2 database.](images/azuredatastudio_ct_step1.png)
 
-1. Select **Oracle** as the data source type in the first screen.
+1. Select **MongoDB** as the data source type in the first screen.
 
-    ![Image showing Oracle selected on the start screen for the Data Virtualization wizard.](images/azuredatastudio_ct_step2.png)
+    ![Image showing MongoDB selected on the start screen for the Data Virtualization wizard.](images/azuredatastudio_ct_step2.png)
 
 1. On the next screen, click on the `External Data Source Name` field and a pop-down should appear. You should be able to select the external data source you created above.
 
-1. Enter `xe` in the SID field. Also note that you don't need to select the credential, since it was defined as part of the data source. You should then be able to click Next.
+1. Enter the name of the MongoDB database in the Database field. 
+
+    Also note that you don't need to select the credential, since it was defined as part of the data source. You should then be able to click Next.
 
 ![Image showing the data source connection fields filled in.](images/azuredatastudio_ct_step3.png)
 
-1. Open the `xe` item, then open the `Tables` item. It will take a few seconds to populate, and you should then see a list of all tables on the database server. (Note that you will also see tables for other users that you won't have access to - make sure you look for the tables beginning with your database name.) For example, in this screenshot we are selecting to add an external table for all three `SP` tables.
+1. Open the database item, then open the `Tables` item. It will take a few seconds to populate, and you should then see a list of all tables on the database server. (Note that you will also see tables for other users that you won't have access to - make sure you look for the tables beginning with your database name.)
 
-![Image showing the three SP tables selected in the listing.](images/azuredatastudio_ct_step4.png)
+![Image showing the three Prop2 tables selected in the listing.](images/azuredatastudio_ct_step4.png)
 
 1. Finally, click Next, and then click Create (or alternatively click Generate Script if you want to see how the external tables are actually created.)
 
@@ -136,7 +125,7 @@ If you login to your SQL server with SSMS, you will now see the external tables 
 
 ![Image showing External Tables in SSMS](images/ssms_ext_tables.png)
 
-The linked tables work just like SQL Server tables. You can now run queries directly against the Oracle tables. The Oracle tables will be generated in a *namespace* in your SQL Server database which is the same name as the remote database in Oracle - so, for the `SP` database, the tables will appear in the `SP` namespace. You should include the namespace in your queries if you have similarly named tables in the default (`dbo`) namespace.
+The linked tables work just like SQL Server tables. You can now run queries directly against the MongoDB tables. The MongoDB tables will be generated in a *namespace* in your SQL Server database which is the same name as the remote database in MongoDB - so, for the `Prop2` database, the tables will appear in the `Prop2` namespace. You should include the namespace in your queries if you have similarly named tables in the default (`dbo`) namespace.
 
 ![Image showing a query run against an external table in SSMS.](images/ssms_success_query.png)
 

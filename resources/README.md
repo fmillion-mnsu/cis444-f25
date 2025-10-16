@@ -4,9 +4,10 @@
 
 * **Accessing SQL Server from Python**: see the [documentation](python/README.md)
 * **Accessing MongoDB from Python**: see the [documentation](python-mongodb/README.md)
-* **Setting up linked servers between two Microsoft SQL Servers**, see the [Linked Server documentation](../LINKED-SERVERS.md) in this repository.
+* **Setting up linked servers between two Microsoft SQL Servers**: see the [Linked Server documentation](../LINKED-SERVERS.md) in this repository.
+* **Linking MongoDB to SQL Server**: see the [PolyBase doumentation](LINKED-MONGO-POLYBASE.md) in this repository.
 * **Using an ORM to work with SQL databases from Python** (SQLAlchemy): see the [documentation](python-orm/README.md).
-
+* **Running Python inside of SQL Server**: see the [documentation](PYTHON-IN-MSSQL.md)
 ## Download Links
 
 * SQL Server clients:
