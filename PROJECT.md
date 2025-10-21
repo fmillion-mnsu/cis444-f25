@@ -154,7 +154,7 @@ You will:
 * Create appropriate indexes for your queries to ensure maximum performance
 * Design and create ERDs for at least two star schemas based on your Query List 1 business questions. We will be implementing these schemas in *MongoDB* during Sprint 3.
 
-#### Deliverables
+### Deliverables
 
 Deliverables to include in your **final project portfolio** include:
 
@@ -317,6 +317,71 @@ Deliverables to include in your **final project portfolio** include:
 * **Collaborate on design** - have the whole team review star schemas before implementation begins
 * Don't underestimate the merger analysis - discovering differences now will save time in Sprint 4!
 
+## Sprint 4: Data Warehousing II - Data Marts, Company Merger and Reporting Prep
+
+This sprint will focus on a **merger scenario** - where all of the databases we started with ultimately form a "merged" corporation.
+
+This will present some unique and interesting challenges:
+
+* How to map data elements between different source databases
+* How to handle gaps (each database will have different dates of data)
+* How to attempt to match common values (if any)
+* Decision: do we integrate all the databases together for future OLTP, or do we allow the databases to continue to exist independently?
+
+### Data Merge
+
+If you didn't already complete it in Sprint 3, load the data from the other two databases (the two you didn't start with) into your MongoDB instance. You can either create a new database to hold the collections, or you can load everything into one database using a schema of your choosing (e.g. prefix all Sakila tables with `Sakila_`).
+
+Update your ETL scripts that you wrote to move the first database to MongoDB and use the same scripts to load the new databases. At this stage, it is acceptable to have your ETL scripts simply delete all data in the target tables/collections and reload from scratch. We'll explore alternative strategies in Sprint 5.
+
+### ETL Updates for Data Warehouse
+
+If you haven't already, consider how you can *adapt your ETL processes for your data warehouse* - your star/snowflake schemas - to *incorporate data from the other database(s)* in your new data lake.
+
+If none of your query list queries, star schemas, etc. support this, you should create a new scenario and schema. It's OK for you to change your analytics scenarios at this point - but part of this exercise will be *planning for your dashboard* - it's worth considering a scenario accordingly! (See below.)
+
+Update your ETL tasks to *load data from multiple source databases* into the *same dimension and fact tables*. This will usually necessitate a custom field mapping and/or custom transforms for each source database - this is part of the ETL process! Then run your ETL and check the results using the same queries you already wrote for your fact tables.
+
+### Views, Procedures, and Analytics
+
+In this sprint, you'll also begin preparing for your analytics dashboard. To make this process straightforward, you should begin considering the *analytical queries you can run against your data warehouse* in order to produce results of interest. *Particularly,* you want your queries to have at least one variable - something that the user of the dashboard can change to adapt the visualization. An easy example is ability to select a month and year for a time-based visualization, but use your imagination!
+
+Write at least **three queries** in the form of views or stored procedures. Two of those three queries should incorporate **at least one variable** that can be changed during analytics querying.
+
+### Data Marts
+
+Create at least two **department-specific data marts** in your database. This will, again, require an ETL process! You can move data *from the data warehouse* directly into your data *mart* tables.
+
+For data marts, consider who the "owners" of those data marts are. For example, you could have the "finance" data mart as well as the "sales" data mart. The finance data mart might include only aggregate figures (e.g. sales per day) and/or only contain specific data relevant for financial analysis (e.g. including only the totals of transactions, not the individual order lines). Similarly, the sales data might not include as much financial data but might focus on categorical organization or "unit sales" data.
+
+Write ETL processes to create these data mart tables. Include your ETL scripts in your deliverables.
+
+### Data Validation
+
+You can consider this a lower priority deliverable for this sprint, but if you make it through the earlier elements and need some more activity, you can start to consider a *data validation strategy*. This will be covered more in depth during Sprint 5.
+
+In particular, you could:
+
+* Design a tool that reads and verifies data - for example, ensures that the state field in all addresses is a valid state (accounting for variances in capitalization for example), or
+* Ensure your data warehouse tables have constraints to enforce data safety, *and* incorporate handling in your ETL tools to deal with data that can't be inserted due to non-conformance
+
+Start considering how you'll implement this during Sprint 5. If you are *way* ahead feel free to start working on this - we'll discuss this more near the end of Sprint 4.
+
+### Graduate Students: ORM Exercises
+
+For graduate students, you'll be working on ETL but you'll be focusing on using an **object-relational mapper** to do ETL, rather than bare SQL scripts and cursors. There will be a lecture on ORMs during the sprint during which we'll cover the specific additional requirement for graduate students for this section.
+
+### Deliverables
+
+This sprint contains a wider variety of different types of tasks. As usual, simply include scripts, screenshots, journals, etc. as appropriate to demonstrate your implementation of:
+
+* Updated ETL to load all three databases from SQL Server to MongoDB
+* Updated ETL scripts that bring in data from multiple sources (possibly doing different transforms per source) and loading data into your star/snowflake schemas
+* Scripts for views/stored procedures in preparation for analytics
+* ETL for data mart creation
+* If you get to it: Plan for data validation - how will you validate each field (What are the requirements for each field to be considered valid)?
+* Graduate students: ORM specific program code as discussed during the ORM lecture
+
 # Changes
 
 This section details *changes* that have been made to this document. You should review this section *regularly* to identify any updates or additions to the project documentation and scope.
@@ -326,3 +391,4 @@ This section details *changes* that have been made to this document. You should 
     * Add full details for Sprint 2. 
     * Adjust sprint topics. (DW 1 and 2 are TBD based on progress during Sprint 2.)
 * 2025-10-06: Add full details for Sprint 3 DW1.
+* 2025-10-20: Add full details for Sprint 4 DW2.
