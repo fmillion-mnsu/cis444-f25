@@ -82,10 +82,17 @@ Azure Data Studio's Virtualization wizard normally lets you specify the connecti
 The query is as follows. **Replace `data_source_name` with another unique identifier** that you'll use later, and **replace `mongo_host` and `mongo_port` with the correct values**. Finally, **replace `credential_identifier` with the same identifier you used** in the `CREATE DATABASE SCOPED CREDENTIAL` query.
 
     CREATE EXTERNAL DATA SOURCE data_source_name WITH ( 
-        LOCATION = 'mongodb://mongo_host:mongo_port',
+        LOCATION = 'mongodb://link.campus-quest.com:mongo_port',
         CONNECTION_OPTIONS = 'tls=false; ssl=false',
         CREDENTIAL = credential_identifier
     )
+
+> [!IMPORTANT]
+> The address `link.campus-quest.com` points back to the database server itself. Use this address when creating your linked server to **maximize performance** across the link.
+>
+> Using `cis444.campus-quest.com` does work, but will be slower as it connects to the cloud proxy, which connects back to the server, thus introducing latency and lag.
+>
+> TL;dr: **Replace your server address** (usually `cis444.campus-quest.com`) **with** `link.campus-quest.com` **when adding your linked server.**
 
 Once you have run these two queries, you're ready to use the wizard to create linked tables!
 
