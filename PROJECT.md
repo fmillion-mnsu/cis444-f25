@@ -382,6 +382,308 @@ This sprint contains a wider variety of different types of tasks. As usual, simp
 * If you get to it: Plan for data validation - how will you validate each field (What are the requirements for each field to be considered valid)?
 * Graduate students: ORM specific program code as discussed during the ORM lecture
 
+## Sprint 5: Analytics Dashboards and Data Governance
+
+In Sprint 5, you will begin to build your analytics dashboards and implement a comprehensive data governance system. This sprint bridges the technical data infrastructure you've built with the business intelligence that stakeholders need to make decisions.
+
+You will transition from building data pipelines to creating the visual analytics layer while establishing governance practices that ensure data quality and trustworthiness.
+
+### Overview
+
+Sprint 5 has two primary focus areas:
+
+1. **Data Governance Database (DGDB)** - A system for tracking ETL operations, validation rules, and data quality
+2. **Analytics Dashboard** - At least one Power BI dashboard that visualizes your data warehouse insights
+
+### Part 1: Data Governance Database (DGDB)
+
+The Data Governance Database is a separate database (or schema within your existing database) that tracks your data operations and enforces data quality standards.
+
+#### DGDB Purpose
+
+Your DGDB should accomplish these goals:
+
+* Track ETL run history (when jobs ran, how long they took, success/failure status)
+* Store validation rules that your ETL processes enforce
+* Log validation results (which records passed/failed which rules)
+* Document your data merger logic and transformations
+* Provide data for governance reporting and dashboards
+
+#### DGDB Schema
+
+While you're free to design your own schema, here's a suggested starting point:
+
+```
+ETL_Runs Table:
+
+* Run_ID (PK)
+* ETL_Job_Name (which ETL process ran)
+* Start_DateTime
+* Duration_Seconds
+* Status (Success/Failure/Partial)
+* Records_Processed
+* Records_Rejected
+* Notes/Error_Messages (e.g. TEXT field that can contain an entire log. Alternatively, omit this field and use another table to store many individual log entries tied to runs by Run_ID)
+
+Validation_Rules Table:
+
+* Rule_ID (PK)
+* Rule_Name (machine-readable)
+* Created_Date
+* Rule_Description (plain English explanation)
+* Rule_Category (e.g., 'Referential Integrity', 'Business Logic', 'Format Validation')
+* Severity_Level (e.g., 'Critical', 'Warning', 'Info')
+* Rule_Logic (SQL or Python logic that implements the rule) This one will take some thought - how can you represent a rule in an SQL table? You could do regular expression matching, simple type checks, or even a complex JSON-based definition format. Use your imagination!
+* Is_Active (boolean - allows disabling rules without deleting them)
+
+**Validation_Results Table:**
+* Result_ID (PK)
+* Run_ID (FK to ETL_Runs)
+* Rule_ID (FK to Validation_Rules)
+* Validation_DateTime
+* Records_Checked
+* Records_Passed
+* Records_Failed
+
+**Data_Lineage Table** (optional but recommended):
+* Lineage_ID (PK)
+* Source_System (e.g., 'MongoDB - Sakila', 'MongoDB - Northwind')
+* Source_Table
+* Target_System (e.g., 'SQL Server DW')
+* Target_Table
+* Transformation_Description
+* Last_Updated
+```
+
+Feel free to add, remove, or modify tables as needed for your implementation!
+
+#### Validation Rules Implementation
+
+Your validation rules should operate at multiple tiers:
+
+##### Tier 1: Required Validations (Everyone)
+
+Implement at least **3-5 validation rules** from these categories:
+
+* **Referential Integrity:** Beyond basic FK constraints - verify that relationships make sense across your merged data
+* **Non-Null Critical Fields:** Ensure essential business fields are populated
+* **Positive Values:** Prices, quantities, and other measures that must be positive
+* **Data Type/Format Consistency:** Dates formatted correctly, phone numbers standardized, etc.
+* **Value Range Reasonableness:** Values within plausible ranges (even if historical)
+
+##### Tier 2: Encouraged Validations
+
+If time permits, add rules like:
+
+* **Cross-Field Logic:** End dates after start dates, employee termination after hire date, etc.
+* **Statistical Outlier Detection:** Flag unusually high/low values for manual review
+* **Business Rule Enforcement:** Domain-specific rules from your business scenario
+
+##### Tier 3: Advanced rules
+
+This section can be focused on by graduate students - implement at least **2 additional advanced rules:**
+
+* **Cross-Database Consistency:** Verify that merged data from different sources maintains logical consistency
+* **Historical Data Reasonableness:** Account for different time periods across datasets
+* **Complex Multi-Condition Rules:** Business rules with multiple dependencies
+
+#### Merger Logic Documentation
+
+One of your most important validation tasks is documenting and validating your data merger strategy. Create validation rules that verify your merger transformations are working correctly.
+
+**Examples of merger validation rules:**
+
+* "All Sakila customer IDs have 'SAK-' prefix in merged customer dimension"
+* "Products from Northwind have source_system = 'Northwind' in product dimension"
+* "Employee records span expected date ranges: Employees DB (1985-2002), Northwind (1996-1998)"
+* "No ID collisions exist across merged data sources"
+
+**Documentation Requirements:**
+
+1. **Plain English Rules Document** - Create a document (or section in your portfolio) that explains:
+   * How you handled ID conflicts during the merger
+   * What prefixes, suffixes, or key transformations you applied
+   * How you mapped similar entities across databases (e.g., all three databases have "people")
+   * What assumptions you made about data compatibility
+   * How you handled temporal differences (different date ranges)
+
+2. **Rules in DGDB** - Store these merger rules in your Validation_Rules table so your ETL can:
+   * Parse and execute them programmatically
+   * Log the results to Validation_Results
+   * Alert when merger logic fails
+
+#### ETL Updates
+
+Retrofit your existing ETL code (from Sprints 3 and 4) to:
+
+1. **Log ETL Runs:** Every time your ETL runs, insert a record into ETL_Runs
+2. **Execute Validation Rules:** Read rules from Validation_Rules table and execute them
+3. **Log Validation Results:** Write outcomes to Validation_Results table
+4. **Handle Validation Failures:** You have choices on how to handle failures:
+   * **Strict Mode:** Reject records that fail critical validations
+   * **Logging Mode:** Load all records but flag failures in DGDB
+   * **Hybrid:** Reject on critical failures, log on warnings
+   
+   Document your choice and implement consistently!
+
+5. **Error Handling:** Capture and log any ETL errors or exceptions
+
+### Part 2: Analytics Dashboard Development
+
+Create at least **one comprehensive dashboard** during Sprint 5, with the expectation that you'll complete a second dashboard in Sprint 6.
+
+#### Dashboard Requirements: Executive/Global Dashboard (Priority for Sprint 5)
+
+This dashboard should provide a high-level view of your entire "merged company" using data from your data warehouse (star/snowflake schemas).
+
+**Required Elements:**
+
+* **Minimum 4 meaningful visualizations** - each should answer a specific business question
+* **At least 1 interactive element** - filters, slicers, drill-downs, date range selectors, etc.
+* **KPI cards or metrics** - high-level numbers that executives care about
+* **ETL/Data Quality Visualization** - incorporate data from your DGDB to show:
+  * Recent ETL run status
+  * Data quality trends
+  * Validation pass rates
+  * Or similar governance metrics
+
+**Visualization Quality:**
+
+Focus on creating visualizations that tell a story and provide actionable insights. Don't create meaningless charts just to meet a count requirement. Each visualization should:
+
+* Answer a clear business question
+* Use appropriate chart types for the data
+* Include proper labels, titles, and formatting
+* Be easy to interpret at a glance
+
+##### Dashboard 2: Department-Specific Dashboard (Sprint 5 or 6)
+
+This dashboard should dive deep into one business area using data from one of your data marts.
+
+**Required Elements:**
+
+* **Minimum 4 meaningful visualizations**
+* **At least 1 interactive element**
+* **Focus on departmental KPIs** - metrics relevant to that specific business unit
+* **Comparison/Trend Analysis** - show changes over time or comparisons between categories
+
+**Examples of department dashboards:**
+* Sales Performance (products sold, revenue trends, top customers)
+* HR Analytics (headcount, retention, hiring trends)
+* Financial Performance (revenue, expenses, profitability)
+* Operations (inventory, fulfillment times, efficiency metrics)
+
+#### Technical Requirements
+
+* **Tool:** Power BI Desktop (free version) is recommended, but you may use alternatives (Tableau, Looker, etc.) if you can meet all deliverables
+* **Data Connection:** Connect to your SQL Server data warehouse/data marts (not the data lake in MongoDB)
+* **Documentation:** For each dashboard, document:
+  * What business questions it answers
+  * Who the intended audience is
+  * What data sources it uses
+  * Any calculations or transformations you performed
+
+#### Graduate Students: Advanced Analytics
+
+Graduate students should incorporate **advanced analytics features** into their dashboards:
+
+**DAX**
+
+Create at least **2-3 calculated measures using DAX** (Data Analysis Expressions). These should go beyond simple sums or counts.
+
+**Examples of DAX measures to implement:**
+
+* **Year-over-Year Growth:**
+  ```
+  YoY Growth % = 
+  DIVIDE(
+      [Current Year Sales] - [Previous Year Sales],
+      [Previous Year Sales]
+  )
+  ```
+
+* **Running Total:**
+  ```
+  Running Total Sales = 
+  CALCULATE(
+      [Total Sales],
+      FILTER(
+          ALLSELECTED(Date[Date]),
+          Date[Date] <= MAX(Date[Date])
+      )
+  )
+  ```
+
+* **Moving Average:**
+  ```
+  30-Day Moving Avg = 
+  CALCULATE(
+      AVERAGE(Sales[Amount]),
+      DATESINPERIOD(Date[Date], LASTDATE(Date[Date]), -30, DAY)
+  )
+  ```
+
+* **Percentage of Total:**
+  ```
+  % of Total Revenue = 
+  DIVIDE(
+      [Total Sales],
+      CALCULATE([Total Sales], ALL(Product[Category]))
+  )
+  ```
+
+##### Encouraged: Advanced Visualizations
+
+You're also encouraged to implement (focus can be on graduate students):
+
+* **Forecasting:** Use Power BI's built-in forecasting on time-series data
+* **What-If Analysis:** Create parameters that allow users to model scenarios
+* **Advanced Filtering:** Complex filter logic using DAX
+
+### Deliverables
+
+Add the following to your **final project portfolio**:
+
+1. **DGDB Schema:**
+   * SQL DDL scripts for creating your DGDB tables
+   * Documentation of your schema design choices
+
+2. **Validation Rules Documentation:**
+   * Plain English document explaining your validation rules
+   * Special focus on merger logic documentation
+   * Explanation of how you handle validation failures
+
+3. **Updated ETL Code:**
+   * Modified ETL scripts that integrate with DGDB
+   * Code should log runs, execute validations, and record results
+   * Include comments explaining governance integration
+   * *Don't* remove your old code - keep that stored as a historical artifact. Store your updated code under a new name or directory.
+
+4. **At Least One Dashboard:**
+   * Power BI .pbix file (or equivalent for other tools)
+   * Screenshots of your dashboard
+   * Documentation explaining:
+     * Business questions it answers
+     * Intended audience
+     * Data sources used
+     * Key insights or findings
+
+5. **Sprint Documentation:**
+   * Sprint planning notes
+   * Standup meeting notes (at least 4 during this sprint)
+   * Sprint retrospective notes
+
+### Looking Ahead: Final Presentation
+
+As you build your dashboards, start thinking about your final presentation. Your dashboards will likely be a centerpiece of that presentation - they demonstrate the business value of all the technical work you've done.
+
+Consider:
+* What story do your dashboards tell about the business?
+* What interesting insights have you discovered?
+* How would a real company use what you've built?
+
+We'll formalize presentation requirements in Sprint 6, but keeping this in mind now will make that sprint smoother!
+
 # Changes
 
 This section details *changes* that have been made to this document. You should review this section *regularly* to identify any updates or additions to the project documentation and scope.
@@ -392,3 +694,4 @@ This section details *changes* that have been made to this document. You should 
     * Adjust sprint topics. (DW 1 and 2 are TBD based on progress during Sprint 2.)
 * 2025-10-06: Add full details for Sprint 3 DW1.
 * 2025-10-20: Add full details for Sprint 4 DW2.
+* 2025-11-04: Add full details for Sprint 5 DG/PBI.
